@@ -1,0 +1,97 @@
+<!--
+  Wrapper data component for fetching columns 
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="gid-api.html">
+
+<!--
+`gid-concept-service`
+
+The `gid-concept-service` element is a data component acting as a wrapper  on gid-api used for handling rest calls for list entity component.
+
+<gid-concept-service api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        column = "100352" service = "synonyms" examples={{examples}}></gid-concept-service>
+        
+If `api-url` is not provided, the component will display sample output for specified entity.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-concept-service">
+    <template>
+        
+
+        <gid-api auto=false
+                 http-method="GET" api-url={{serviceUrl}} response='{{serviceResponse}}'
+                 api-timeout={{serviceTimeout}} api-params={{serviceParams}}></gid-api>
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-concept-service',
+                properties: {
+                    service: {
+                        type: String,
+                        notify: true,
+                        observer: 'serviceModified'
+                    },
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    serviceUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    serviceTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    serviceResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: 'serviceResponseChanged'
+                    },
+                    serviceParams: {
+                        type: String,
+                        notify: true
+                    },
+                    examples: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    concept: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    }
+                },
+                serviceResponseChanged: function (newvalue, oldvalue) {
+                    console.log(newvalue);
+                    this.examples = [];
+
+                    if (newvalue != null) {
+                        this.async(function () {
+                            this.examples = newvalue[this.service];
+                        }, 500);
+                    }
+
+                },
+                serviceModified: function () {
+                    if (this.service) {
+                        this.serviceUrl = this.apiUrl + '/concepts/' + this.column  +'/' + this.service ;
+                        this.serviceParams= JSON.stringify({
+          	        	  "limit":10, 
+          	        	  "offset":0});
+                    }
+                }
+            });
+        })();
+
+
+    </script>
+</dom-module>
