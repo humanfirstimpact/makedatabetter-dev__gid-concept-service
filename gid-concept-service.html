@@ -83,7 +83,7 @@ If `api-url` is not provided, the component will display sample output for speci
                 },
                 serviceModified: function () {
                     if (this.service) {
-                        this.serviceUrl = this.apiUrl + '/concepts/' + this.column  +'/' + this.service ;
+                        this.serviceUrl = this.apiUrl + '/concepts/' + this.concept  +'/' + this.service ;
                         this.serviceParams= JSON.stringify({
           	        	  "limit":10, 
           	        	  "offset":0});
